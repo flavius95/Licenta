@@ -17,5 +17,11 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::resources([
+    'url' => 'SaveController',
+//    'Crawler' => 'WebCrawlerController'
+    ]);
 Route::get('/url/create', 'SaveController@create');
 Route::post('/url/save', 'SaveController@store')->name('save');
+Route::get('/url/crawl', 'WebCrawlerController@index_crawl');
+Route::post('/url/show', 'WebCrawlerController@show')->name('details');

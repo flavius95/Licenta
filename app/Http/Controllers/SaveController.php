@@ -13,7 +13,7 @@ class SaveController extends Controller
   */
    public function index()
    {
-       $urls = Url::all()->toArray();
+       $urls = UrlModel::all()->toArray();
        
        return view('urls.index', compact('urls'));
    }
@@ -35,12 +35,20 @@ class SaveController extends Controller
      */
     public function store(Request $request)
     {
+        $url = htmlspecialchars($_POST['page_url']);
+        if (!preg_match("/^(https?:\/\/+[\w\-]+\.[\w\-]+)/i",$url))
+        {   
+            $url = '';
+            echo('Not a valid Url');
+        }
+        else
+        {
         $url = new UrlModel([
-            'url' => $request->get('page_url')
+            'url' => $request->get('page_url'),
         ]);
-      
         $url->save();
         return redirect('/url/create');
+        }
     }
 
 /**
@@ -50,39 +58,6 @@ class SaveController extends Controller
  * @return \Illuminate\Http\Response
  */
     public function show($id)
-    {
-        //
-    }
-    
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        
-    }
-    
-    /**
-     * Update the specified resource in storage.
-     * 
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        
-    }
-       /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
     {
         //
     }
