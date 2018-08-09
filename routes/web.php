@@ -23,5 +23,4 @@ Route::resources([
     ]);
 Route::get('/url/create', 'SaveController@create');
 Route::post('/url/save', 'SaveController@store')->name('save');
-Route::get('/url/crawl', 'WebCrawlerController@index_crawl');
-Route::post('/url/show', 'WebCrawlerController@show')->name('details');
+Route::get('/url/crawl', 'CrawlerController@create');

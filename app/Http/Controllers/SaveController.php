@@ -29,6 +29,7 @@ class SaveController extends Controller
     
     /**
      * Store a newly created resource in storage.
+     * Validation for url field.
      * 
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
@@ -38,7 +39,6 @@ class SaveController extends Controller
         $url = htmlspecialchars($_POST['page_url']);
         if (!preg_match("/^(https?:\/\/+[\w\-]+\.[\w\-]+)/i",$url))
         {   
-            $url = '';
             echo('Not a valid Url');
         }
         else
@@ -50,6 +50,7 @@ class SaveController extends Controller
         return redirect('/url/create');
         }
     }
+    
 
 /**
  * Display the specified resource.
