@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Symfony\Component\DomCrawler\Crawler;
 use Illuminate\Http\Request;
 use App\url as UrlModel;
 
@@ -43,24 +44,21 @@ class SaveController extends Controller
         }
         else
         {
-        $url = new UrlModel([
+            $html = file_get_contents($url);
+
+            $crawler = new Crawler($html);;
+            $nodeValues = $crawler->filter('p')->each(function (Crawler $node, $i) {
+                return $node->text();
+            });
+            $content_separated = implode(" ", $nodeValues);
+            $content_print = substr($content_separated, 0, 200) . '...'; 
+            $url = new UrlModel([
             'url' => $request->get('page_url'),
+            'data' => $content_print,
         ]);
-        $url->save();
+            $url->save();
         return redirect('/url/create');
         }
-    }
-    
-
-/**
- * Display the specified resource.
- * 
- * @param int $id
- * @return \Illuminate\Http\Response
- */
-    public function show($id)
-    {
-        //
     }
 }
 

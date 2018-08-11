@@ -6,6 +6,7 @@
       <tr>
         <th>ID</th>
         <th>Url</th>
+        <th>Data</th>
       </tr>
     </thead>
     <tbody>
@@ -13,6 +14,7 @@
       <tr>
         <td>{{$post['id']}}</td>
         <td>{{$post['url']}}</td>
+        <td>{{$post['data']}}</td>
       </tr>
       @endforeach
     </tbody>

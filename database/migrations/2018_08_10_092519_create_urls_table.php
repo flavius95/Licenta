@@ -13,9 +13,10 @@ class CreateUrlsTable extends Migration
      */
     public function up()
     {
-        Schema::connection('mysql2')->create('urls', function (Blueprint $table) {
+        Schema::create('urls', function (Blueprint $table) {
             $table->increments('id');
             $table->string('url');
+            $table->longtext('data');
             $table->timestamps();
         });
     }
