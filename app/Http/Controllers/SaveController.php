@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Symfony\Component\DomCrawler\Crawler;
 use Illuminate\Http\Request;
 use App\url as UrlModel;
+use \App\Http\Helpers\TfIdfHelper;
 
 class SaveController extends Controller
 {
@@ -45,20 +45,22 @@ class SaveController extends Controller
         else
         {
             $html = file_get_contents($url);
-
-            $crawler = new Crawler($html);;
-            $nodeValues = $crawler->filter('p')->each(function (Crawler $node, $i) {
-                return $node->text();
-            });
-            $content_separated = implode(" ", $nodeValues);
-            $content_print = substr($content_separated, 0, 200) . '...'; 
+            
+            $helper = new TfIdfHelper();
+//            $tf = $helper->generateTf($html);
+            $helper->getLinks($url);
+            
+//            $content_print = substr($content_separated, 0, 200) . '...'; 
             $url = new UrlModel([
             'url' => $request->get('page_url'),
-            'data' => $content_print,
+            'data' => print_r($tf, true),
         ]);
+            
+            
             $url->save();
         return redirect('/url/create');
         }
     }
+
 }
 
