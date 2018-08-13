@@ -22,7 +22,6 @@ class TfIdfHelper {
         $crawler = new Crawler($html);
         
         $link = $crawler->filter('a');
-        dd($link);
         $nodeValues = $crawler->filter('p')->each(function (Crawler $node, $i) {
             return $node->text();
         });
@@ -39,7 +38,7 @@ class TfIdfHelper {
             $tfData[$word] = $frequency / $totalWords;
         }
         
-        return $tfData;
+        return json_encode($tfData);
     }
     
     public function generateIdf()
@@ -60,6 +59,7 @@ class TfIdfHelper {
                
                 return $node->attr('href');
         });
+        $content_separated = implode("\n", $found);
         $result = [];
         foreach ($found as $item) 
         {
@@ -74,11 +74,8 @@ class TfIdfHelper {
                 if (!in_array($line, $result)) {
                     $result[] = $line;
                 }
-                
             }
         }
-            
-        dd($result);
-
+        return $result;
     }
 }

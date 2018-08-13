@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class url extends Model
 {
-    protected $fillable = ['url', 'data'];
+    protected $fillable = ['url', 'sub_urls', 'data'];
 }

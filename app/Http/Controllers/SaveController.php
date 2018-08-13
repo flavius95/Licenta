@@ -47,16 +47,17 @@ class SaveController extends Controller
             $html = file_get_contents($url);
             
             $helper = new TfIdfHelper();
-//            $tf = $helper->generateTf($html);
-            $helper->getLinks($url);
+            $tf = $helper->generateTf($html);
+            $idf = $helper->getLinks($url);
             
 //            $content_print = substr($content_separated, 0, 200) . '...'; 
             $url = new UrlModel([
             'url' => $request->get('page_url'),
+            'sub_urls' => print_r($idf, true),
             'data' => print_r($tf, true),
         ]);
             
-            
+
             $url->save();
         return redirect('/url/create');
         }
