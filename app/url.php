@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class url extends Model
 {
-    protected $fillable = ['url', 'sub_urls', 'data'];
+    protected $fillable = ['url'];
+    public function UrlPagesId()
+    {
+        return $this->belongsToMany('App\Http\Http\UrlPages');
+    }
 }

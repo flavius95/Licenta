@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUrlsTable extends Migration
+class CreateUrlPagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateUrlsTable extends Migration
      */
     public function up()
     {
-        Schema::create('urls', function (Blueprint $table) {
+        Schema::create('url_pages', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('url');
+            $table->integer('searched_url');
+            $table->longtext('sub_urls');
+            $table->json('tf_words');
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ class CreateUrlsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('urls');
+        Schema::dropIfExists('url_pages');
     }
 }

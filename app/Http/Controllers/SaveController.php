@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\url as UrlModel;
+use App\UrlPages as UrlPagesModel;
 use \App\Http\Helpers\TfIdfHelper;
 
 class SaveController extends Controller
@@ -49,15 +50,19 @@ class SaveController extends Controller
             $helper = new TfIdfHelper();
             $tf = $helper->generateTf($html);
             $idf = $helper->getLinks($url);
-            
+
 //            $content_print = substr($content_separated, 0, 200) . '...'; 
             $url = new UrlModel([
             'url' => $request->get('page_url'),
-            'sub_urls' => print_r($idf, true),
-            'data' => print_r($tf, true),
         ]);
-            
 
+            $url_pages = new UrlPagesModel([
+                'searched_url' => print_r($url_id, true), //To be continued with $url_id...
+                'sub_urls' => print_r($idf, true),
+                'data' => json_encode($tf),
+            ]);
+                        dd($url_pages);
+            $url_pages->save();
             $url->save();
         return redirect('/url/create');
         }

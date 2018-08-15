@@ -46,9 +46,12 @@ class TfIdfHelper {
         
     }
     
-    public function parseData($url)
-    {
-        
+    //Doesn't work like this!!
+    public function getSubUrlsId($url)
+    {                   
+            foreach($UrlPagesId as $UrlPage) {
+                echo $UrlPage->id;
+            }
     }
     public function getLinks($url)
     {
