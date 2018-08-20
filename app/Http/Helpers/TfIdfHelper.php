@@ -46,12 +46,11 @@ class TfIdfHelper {
         
     }
     
-    //Doesn't work like this!!
-    public function getSubUrlsId($url)
+    public function getSubUrlsId()
     {                   
-            foreach($UrlPagesId as $UrlPage) {
-                echo $UrlPage->id;
-            }
+        $UrlPagesId = App\url::find(1)->$UrlPagesId;
+        foreach($UrlPagesId as $UrlPage) {              
+        }
     }
     public function getLinks($url)
     {
@@ -60,7 +59,7 @@ class TfIdfHelper {
 
             $found = $crawler->filter('a')->each(function (Crawler $node, $i) {
                
-                return $node->attr('href');
+            return $node->attr('href');
         });
         $content_separated = implode("\n", $found);
         $result = [];
@@ -74,7 +73,7 @@ class TfIdfHelper {
                       $line = $url . $item;
                 }
                 
-                if (!in_array($line, $result)) {
+                if(!in_array($line, $result)) {
                     $result[] = $line;
                 }
             }

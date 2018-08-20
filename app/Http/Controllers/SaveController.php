@@ -51,18 +51,26 @@ class SaveController extends Controller
             $tf = $helper->generateTf($html);
             $idf = $helper->getLinks($url);
 
-//            $content_print = substr($content_separated, 0, 200) . '...'; 
             $url = new UrlModel([
             'url' => $request->get('page_url'),
         ]);
-
-            $url_pages = new UrlPagesModel([
-                'searched_url' => print_r($url_id, true), //To be continued with $url_id...
-                'sub_urls' => print_r($idf, true),
-                'data' => json_encode($tf),
-            ]);
-                        dd($url_pages);
-            $url_pages->save();
+//iterate between idf data (array) and save them into db
+            if (count($idf)) {
+                $dataPages = [];
+                foreach ($idf as $line) {
+                    $dataPages[] = [
+                        'searched_url' => rand(1,9999999),
+                        'sub_urls' => $line,
+                        'data' => json_encode($tf), 
+                        'createdAt' => time(),
+                        'updatedAt' => time(),
+                    ];
+                }
+//                dd($dataPages);
+                UrlPagesModel::create($dataPages);
+                $url_pages = new UrlPagesModel($dataPages);
+                $url_pages->save();
+            }     
             $url->save();
         return redirect('/url/create');
         }

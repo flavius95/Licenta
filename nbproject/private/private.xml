@@ -5,9 +5,10 @@
         <group>
             <file>file:/home/oem/projects/licenta/app/Http/Helpers/TfIdfHelper.php</file>
             <file>file:/home/oem/projects/licenta/app/Http/Controllers/SaveController.php</file>
-            <file>file:/home/oem/projects/licenta/resources/views/urls/index.blade.php</file>
+            <file>file:/home/oem/projects/licenta/database/migrations/2018_08_15_085724_create_url_pages_table.php</file>
             <file>file:/home/oem/projects/licenta/routes/web.php</file>
-            <file>file:/home/oem/projects/licenta/resources/views/urls/create.blade.php</file>
+            <file>file:/home/oem/projects/licenta/app/url.php</file>
+            <file>file:/home/oem/projects/licenta/app/UrlPages.php</file>
         </group>
     </open-files>
 </project-private>

@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class url extends Model
 {
     protected $fillable = ['url'];
-    public function UrlPagesId()
+    public function UrlPages()
     {
-        return $this->belongsToMany('App\Http\Http\UrlPages');
+        return $this->belongsToMany('App\UrlPages');
     }
 }
