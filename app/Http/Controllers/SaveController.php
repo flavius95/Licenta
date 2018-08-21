@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\url as UrlModel;
-use App\UrlPages as UrlPagesModel;
+use App\Url as UrlModel;
+use App\Pages as PagesModel;
 use \App\Http\Helpers\TfIdfHelper;
 
 class SaveController extends Controller
@@ -54,24 +54,31 @@ class SaveController extends Controller
             $url = new UrlModel([
             'url' => $request->get('page_url'),
         ]);
-//iterate between idf data (array) and save them into db
+            $searched_url = $url::where('id', 1)->get();
+            if(empty($searched_url))
+            {
+                $url->save();
+            }
+            else
+            {
+                echo('Continue');
+            }
+
+    //iterate between idf data (array) and save them into db
             if (count($idf)) {
                 $dataPages = [];
                 foreach ($idf as $line) {
-                    $dataPages[] = [
-                        'searched_url' => rand(1,9999999),
+                    $dataPages[] = new PagesModel([
+                        'url_id' => $url->id,
                         'sub_urls' => $line,
-                        'data' => json_encode($tf), 
-                        'createdAt' => time(),
-                        'updatedAt' => time(),
-                    ];
+                        'tf_words' => json_encode($tf), 
+                    ]);
                 }
-//                dd($dataPages);
-                UrlPagesModel::create($dataPages);
-                $url_pages = new UrlPagesModel($dataPages);
-                $url_pages->save();
-            }     
-            $url->save();
+             
+
+              $url->pages()->saveMany($dataPages);
+            } 
+            dd($searched_url);
         return redirect('/url/create');
         }
     }
