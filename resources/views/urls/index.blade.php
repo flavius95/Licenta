@@ -6,8 +6,6 @@
       <tr>
         <th>ID</th>
         <th>Url</th>
-        <th>SubUrls</th>
-        <th>Data</th>
       </tr>
     </thead>
     <tbody>
@@ -15,8 +13,6 @@
       <tr>
         <td>{{$post['id']}}</td>
         <td>{{$post['url']}}</td>
-        <td>{{$post['sub_urls']}}</td>
-        <td>{{$post['data']}}</td>
       </tr>
       @endforeach
     </tbody>

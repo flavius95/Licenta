@@ -16,7 +16,7 @@ class SaveController extends Controller
    public function index()
    {
        $urls = UrlModel::all()->toArray();
-       
+//       dd($urls);
        return view('urls.index', compact('urls'));
    }
  /**
@@ -51,37 +51,31 @@ class SaveController extends Controller
             $tf = $helper->generateTf($html);
             $idf = $helper->getLinks($url);
 
-            $url = new UrlModel([
+            $url_model = new UrlModel([
             'url' => $request->get('page_url'),
         ]);
-            $searched_url = $url::where('id', 1)->get();
+            $searched_url = $url_model::where('url', $url)->get();            
             if(empty($searched_url))
             {
-                $url->save();
-            }
+                $url_model->save();
+                  //iterate between idf data (array) and save them into db
+                if (count($idf)) {
+                    $dataPages = [];
+                    foreach ($idf as $line) {
+                        $dataPages[] = new PagesModel([
+                            'url_id' => $url_model->id,
+                            'sub_urls' => $line,
+                            'tf_words' => json_encode($tf), 
+                        ]);
+                    }       
+                  $url_model->pages()->saveMany($dataPages);
+                }
+            }            
             else
             {
-                echo('Continue');
-            }
-
-    //iterate between idf data (array) and save them into db
-            if (count($idf)) {
-                $dataPages = [];
-                foreach ($idf as $line) {
-                    $dataPages[] = new PagesModel([
-                        'url_id' => $url->id,
-                        'sub_urls' => $line,
-                        'tf_words' => json_encode($tf), 
-                    ]);
-                }
-             
-
-              $url->pages()->saveMany($dataPages);
-            } 
-            dd($searched_url);
-        return redirect('/url/create');
+                return redirect('/url/create');
+            }  
         }
     }
-
 }
 
