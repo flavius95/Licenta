@@ -38,7 +38,7 @@ class TfIdfHelper {
             $tfData[$word] = $frequency / $totalWords;
         }
         
-        return json_encode($tfData);
+        return $tfData;
     }
     
     public function generateIdf()
@@ -61,14 +61,13 @@ class TfIdfHelper {
                
             return $node->attr('href');
         });
-        $content_separated = implode("\n", $found);
         $result = [];
         foreach ($found as $item) 
         {
             if (!in_array($item, array('javascript:void(0)', 'javascript:void(0);'))) {
                 
                 if(strpos($item, '//') !== false) {
-                      $line = $url;
+                    continue;
                 }else{
                       $line = $url . $item;
                 }
@@ -78,6 +77,48 @@ class TfIdfHelper {
                 }
             }
         }
+        return $result;
+    }
+    
+    public function getPageTf($url)
+    {
+        try{
+            $url_trimmed = htmlspecialchars($url);
+            if (!preg_match("/^(https?:\/\/+[\w\-]+\.[\w\-]+)/i",$url_trimmed)) {   
+                throw new Exception('Not a valid Url');
+            } else {
+                $html = file_get_contents($url_trimmed);
+                $tf = $this->generateTf($html);
+                
+                return $tf;
+            }
+        } catch (\Exception $ex) {
+            return ['error' => true, 'errorMesg' => $ex->getMessage()];
+        }
+    }
+    
+    public function getPagesTfs($pages) {
+        $tfs = [];
+        
+        if (count($pages)) {
+             foreach ($pages as $page) {
+                $subpages_tf = $this->getPageTf($page);
+                $tfs[] = $subpages_tf;   
+            }
+        }
+        
+        return $tfs;
+    }
+    
+    public function calculateIdf($subpages_nr, $words) {
+        $result = [];
+        
+        if (count($words)) {
+            foreach($words as $word => $frequency) {
+                $result[$word] = $subpages_nr ? log(($subpages_nr/$frequency)) : 0;
+            }
+        }
+        
         return $result;
     }
 }

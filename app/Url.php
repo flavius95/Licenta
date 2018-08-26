@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Url extends Model
 {
-    protected $fillable = ['url'];
+    protected $fillable = ['url', 'tf_words'];
     protected $table = 'url';
         // Primary Key
     public $primaryKey = 'id';

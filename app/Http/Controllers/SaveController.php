@@ -38,34 +38,60 @@ class SaveController extends Controller
      */
     public function store(Request $request)
     {
-        $url = htmlspecialchars($_POST['page_url']);
-        if (!preg_match("/^(https?:\/\/+[\w\-]+\.[\w\-]+)/i",$url))
-        {   
-            echo('Not a valid Url');
-        }
-        else
-        {
-            $html = file_get_contents($url);
-            
             $helper = new TfIdfHelper();
-            $tf = $helper->generateTf($html);
-            $idf = $helper->getLinks($url);
+            $url = $request->get('page_url');
+            $tf = $helper->getPageTf($url);
 
+            if (!empty($tf['error'])) {
+                echo $tf['errorMsg'];
+                exit;
+            }
+            $subpages = $helper->getLinks($url);
+            $subpages_tf_words = $helper->getPagesTfs($subpages);
+
+            $collection = collect(array_keys($tf));
+            foreach ($subpages_tf_words as $page_words) {
+                
+                $intersection = $collection->intersect(array_keys($page_words));
+                
+            }
+
+           $words_intersection = $intersection->all();
+
+            //iterate inside pages and words and calculate aparition into documents
+
+            $words_appearance = [];
+            foreach ($words_intersection as $word) {
+                $words_appearance[$word] = 0;
+                foreach ($subpages_tf_words as $pg) {
+                    if (!empty($pg[$word])) {
+                       $words_appearance[$word] += intval($pg[$word] * count($pg));
+                    }
+
+                } 
+            }
+            $idf_calculation = $helper->calculateIdf(count($subpages), $words_appearance);
             $url_model = new UrlModel([
-            'url' => $request->get('page_url'),
-        ]);
-            $searched_url = $url_model::where('url', $url)->get();            
-            if(empty($searched_url))
+                'url' => $url,
+                'tf_words' => $tf,
+            ]);
+                dd($url_model);
+            $searched_url = $url_model::where('url', $url)->get();
+            if($searched_url->isEmpty())
             {
                 $url_model->save();
                   //iterate between idf data (array) and save them into db
-                if (count($idf)) {
+                if (count($subpages)) {
                     $dataPages = [];
-                    foreach ($idf as $line) {
+                    foreach ($subpages as $line) {
+                        $subpage_tf = $helper->getPageTf($line);
+                        if (!empty($subpage_tf['error'])) {
+                            $subpage_tf = ['error' => $subpage_tf['errorMsg']];
+                        }
                         $dataPages[] = new PagesModel([
                             'url_id' => $url_model->id,
                             'sub_urls' => $line,
-                            'tf_words' => json_encode($tf), 
+                            'tf_words' => json_encode($subpage_tf), 
                         ]);
                     }       
                   $url_model->pages()->saveMany($dataPages);
@@ -74,8 +100,7 @@ class SaveController extends Controller
             else
             {
                 return redirect('/url/create');
-            }  
-        }
+            }
     }
 }
 
