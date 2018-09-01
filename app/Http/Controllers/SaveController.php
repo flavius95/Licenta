@@ -42,8 +42,7 @@ class SaveController extends Controller
             $url = $request->get('page_url');
             $tf = $helper->getPageTf($url);
 
-            if (!empty($tf['error'])) {
-                echo $tf['errorMsg'];
+            if (!empty($tf['error']) && !empty($tf['errorMsg'])) {
                 exit;
             }
             $subpages = $helper->getLinks($url);
@@ -61,10 +60,12 @@ class SaveController extends Controller
             //iterate inside pages and words and calculate aparition into documents
 
             $words_appearance = [];
+            print_r($subpages_tf_words);
             foreach ($words_intersection as $word) {
                 $words_appearance[$word] = 0;
                 foreach ($subpages_tf_words as $pg) {
-                    if (!empty($pg[$word])) {
+                    if (!empty($pg[$word]) && is_numeric($pg[$word])) {
+                        
                        $words_appearance[$word] += intval($pg[$word] * count($pg));
                     }
 
@@ -72,10 +73,9 @@ class SaveController extends Controller
             }
             $idf_calculation = $helper->calculateIdf(count($subpages), $words_appearance);
             $url_model = new UrlModel([
-                'url' => $url,
-                'tf_words' => $tf,
+                'url' => json_encode($url),
+                'tf_words' => json_encode($tf),
             ]);
-                dd($url_model);
             $searched_url = $url_model::where('url', $url)->get();
             if($searched_url->isEmpty())
             {
@@ -85,7 +85,7 @@ class SaveController extends Controller
                     $dataPages = [];
                     foreach ($subpages as $line) {
                         $subpage_tf = $helper->getPageTf($line);
-                        if (!empty($subpage_tf['error'])) {
+                        if (!empty($subpage_tf['error']) && !empty($subpage_tf['errorMsg'])) {
                             $subpage_tf = ['error' => $subpage_tf['errorMsg']];
                         }
                         $dataPages[] = new PagesModel([
@@ -93,10 +93,10 @@ class SaveController extends Controller
                             'sub_urls' => $line,
                             'tf_words' => json_encode($subpage_tf), 
                         ]);
-                    }       
+                    }
                   $url_model->pages()->saveMany($dataPages);
                 }
-            }            
+            } 
             else
             {
                 return redirect('/url/create');

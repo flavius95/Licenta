@@ -3,6 +3,9 @@
 namespace App\Http\Helpers;
 
 use Symfony\Component\DomCrawler\Crawler;
+use NlpTools\Tokenizers\WhitespaceAndPunctuationTokenizer;
+use NlpTools\Utils;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -20,13 +23,15 @@ class TfIdfHelper {
     public function generateTf($html)
     {
         $crawler = new Crawler($html);
-        
-        $link = $crawler->filter('a');
+        $language = $crawler->filter('html')->attr('lang');
         $nodeValues = $crawler->filter('p')->each(function (Crawler $node, $i) {
             return $node->text();
         });
 
         $content_separated = implode(" ", $nodeValues);
+        
+        //aici pun metoda de sanitizare
+        $urltok = new WhitespaceAndPunctuationTokenizer();
         $split_text_words = array_count_values(str_word_count($content_separated, 1));
         
         $totalWords = count($split_text_words);
@@ -106,7 +111,6 @@ class TfIdfHelper {
                 $tfs[] = $subpages_tf;   
             }
         }
-        
         return $tfs;
     }
     
@@ -117,8 +121,7 @@ class TfIdfHelper {
             foreach($words as $word => $frequency) {
                 $result[$word] = $subpages_nr ? log(($subpages_nr/$frequency)) : 0;
             }
-        }
-        
+        } 
         return $result;
     }
 }
