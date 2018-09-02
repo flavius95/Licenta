@@ -3,9 +3,9 @@
 namespace App\Http\Helpers;
 
 use Symfony\Component\DomCrawler\Crawler;
-use NlpTools\Tokenizers\WhitespaceAndPunctuationTokenizer;
-use NlpTools\Utils;
-
+use App\Stopwords;
+use Skyeng\Lemmatizer;
+use Skyeng\Lemma;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -24,18 +24,31 @@ class TfIdfHelper {
     {
         $crawler = new Crawler($html);
         $language = $crawler->filter('html')->attr('lang');
+        //get stopwrds for languages
+        $stopwords_model = new Stopwords();
+        $stopwords_array= $stopwords_model::where('language', $language)->get()->toArray();
+        $stopwords = ["-"];
+        foreach($stopwords_array as $sword) {
+            $stopwords[] = $sword['words'];
+        }
         $nodeValues = $crawler->filter('p')->each(function (Crawler $node, $i) {
             return $node->text();
         });
-
-        $content_separated = implode(" ", $nodeValues);
         
+        //transform text to lowercase
+        $words_map = array_map('strtolower', $nodeValues);
+        $content_separated = implode(" ", $words_map);
         //aici pun metoda de sanitizare
-        $urltok = new WhitespaceAndPunctuationTokenizer();
+
+
         $split_text_words = array_count_values(str_word_count($content_separated, 1));
         
+        $text_words = array_keys($split_text_words);  
+        //eliminate all found stopwords
+        $differences = array_diff($text_words, $stopwords);
+        $lm_words = $this->lemmatize($differences);
+        dd($lm_words);
         $totalWords = count($split_text_words);
-
         $tfData= array();
         
         foreach($split_text_words as $word => $frequency)
@@ -113,6 +126,22 @@ class TfIdfHelper {
         }
         return $tfs;
     }
+    
+    public function lemmatize($words) {
+        $lm = [];
+        if(count($words)) {
+            $lemmatizer_model = new Lemmatizer();
+            foreach ($words as $word) {
+                $lemmatize = $lemmatizer_model->getOnlyLemmas($word);
+                if(is_array($lemmatize)) {
+                    $lm[] = $lemmatize[0];
+                }
+                
+            }
+        }
+        return $lm;
+    }
+    
     
     public function calculateIdf($subpages_nr, $words) {
         $result = [];

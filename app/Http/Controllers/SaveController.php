@@ -7,6 +7,7 @@ use App\Url as UrlModel;
 use App\Pages as PagesModel;
 use \App\Http\Helpers\TfIdfHelper;
 
+
 class SaveController extends Controller
 {
  /**
@@ -16,7 +17,6 @@ class SaveController extends Controller
    public function index()
    {
        $urls = UrlModel::all()->toArray();
-//       dd($urls);
        return view('urls.index', compact('urls'));
    }
  /**
@@ -60,7 +60,6 @@ class SaveController extends Controller
             //iterate inside pages and words and calculate aparition into documents
 
             $words_appearance = [];
-            print_r($subpages_tf_words);
             foreach ($words_intersection as $word) {
                 $words_appearance[$word] = 0;
                 foreach ($subpages_tf_words as $pg) {
