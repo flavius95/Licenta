@@ -9,11 +9,18 @@
 
         <!-- Fonts -->
         <link href="{{asset('css/app.css')}}" rel="stylesheet" type="text/css">
+        <link href="{{asset('css/style.css')}}" rel="stylesheet" type="text/css">
     </head>
-    <body>
-        <br><br>
+    <body id="page-top">
+      <!-- Navigation -->
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+        <div class="container">
+          <a class="navbar-brand" href="javascript:void(0)">Aplicatie pentru extragere si procesare de text</a>
+          <a class="navbar-brand" href="javascript:void(0)">Flavius Daniel Ilina</a>
+        </div>
+      </nav>
+      <section>
         @yield('content')
+      </section>
     </body>
 </html>
-
-
