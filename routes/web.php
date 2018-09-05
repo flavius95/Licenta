@@ -11,15 +11,9 @@
 |
 */
 
-//Route::get('/', 'SaveController@save');
-Route::get('urls', 'UrlsController@index');
-//Route::get('url/{id}', 'UrlsController@show');
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'SaveController@create');
 Route::resources([
     'url' => 'SaveController',
     ]);
-Route::get('/url/create', 'SaveController@create');
+//Route::get('/url/create', 'SaveController@create');
 Route::post('/url/save', 'SaveController@store')->name('save');
-Route::get('/url/crawl', 'CrawlerController@create');
