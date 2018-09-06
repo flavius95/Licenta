@@ -11,9 +11,8 @@
 |
 */
 
-Route::get('/', 'SaveController@create');
+Route::get('/', 'ProcessTextController@create');
 Route::resources([
-    'url' => 'SaveController',
+    'url' => 'ProcessTextController',
     ]);
-//Route::get('/url/create', 'SaveController@create');
-Route::post('/url/save', 'SaveController@store')->name('save');
+Route::post('/url/save', 'ProcessTextController@store')->name('save');

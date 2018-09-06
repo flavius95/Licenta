@@ -9,7 +9,7 @@ use \App\Http\Helpers\TextProcessorHelper;
 
 ini_set('max_execution_time', '1800');
 
-class SaveController extends Controller
+class ProcessTextController extends Controller
 {
  /**
   * Display a listing of the resource.
