@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Url as UrlModel;
-use App\Pages as PagesModel;
+use App\Topic as TopicModel;
 use \App\Http\Helpers\TextProcessorHelper;
 
 ini_set('max_execution_time', '1800');
@@ -18,6 +18,7 @@ class ProcessTextController extends Controller
    public function index()
    {
        $urls = UrlModel::all()->toArray();
+
        return view('urls.index', compact('urls'));
    }
 
@@ -42,8 +43,25 @@ class ProcessTextController extends Controller
      {
           $helper = new TextProcessorHelper();
           $url = $request->get('page_url');
-          $text_processed = $helper->getPageTf($url);
+          $searched_url = UrlModel::where('link',$url)->first();
 
+          if (!is_null($searched_url)) {
+            $data = $searched_url->toArray();
+
+            if(is_array($data) && count($data)){
+               $frontend_response =  [
+                 'topics' => $data['topics'],
+                 'details' => $data['details']
+               ];
+
+               return response()->json($frontend_response);
+            }
+          }
+
+
+
+          $text_processed = $helper->getPageTf($url);
+          $topicsData = TopicModel::all()->toArray();
           if (!empty($text_processed['error']) && !empty($text_processed['errorMsg'])) {
               exit;
           }
@@ -69,20 +87,32 @@ class ProcessTextController extends Controller
               }
           }
 
+          $idf_words = $helper->calculateIdf(count($subpages), $words_appearance);
+          $topicsData = TopicModel::all()->toArray();
+          $topics_grouped = TopicModel::arrangeTopics($topicsData);
+          $website_words  = array_keys($idf_words);
+          $results = [];
+          foreach ($topics_grouped as $topic => $words) {
+            $common_words = array_intersect($website_words, $words);
+            $results[$topic] = $common_words;
+          }
+          $selected_topics = $details = "";
+          if (count($results)) {
+            foreach ($results as $topic => $words) {
+              $selected_topics .= count($words) ? $topic . ', ' : '';
+              $details .= count($words) ? 'Topic ' . $topic . ' has words: ' . implode(', ', $words) : '';
+            }
+          }
           $url_model = new UrlModel([
-              'url' => json_encode($url),
-              'tf_words' => json_encode($text_processed),
+              'link' => $url,
+              'topics' => $selected_topics,
+              'details' => $details
           ]);
 
-          $idf_words = $helper->calculateIdf(count($subpages), $words_appearance);
-          dd($idf_words);
+          $url_model->save();
+          $front_response = ['topics' => $selected_topics, 'details' => $details];
+          return response()->json($front_response);
 
-          $searched_url = $url_model::where('url', $url)->get();
-          if($searched_url->isEmpty())
-          {
-              $url_model->save();
-          } else {
-              return redirect('/url/');
-          }
+
     }
 }

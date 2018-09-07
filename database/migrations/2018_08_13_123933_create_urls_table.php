@@ -15,8 +15,9 @@ class CreateUrlsTable extends Migration
     {
         Schema::create('url', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('url');
-            $table->json('tf_words')->nullable(true);
+            $table->string('link');
+            $table->text('topics')->nullable(true);
+            $table->text('details')->nullable(true);
             $table->timestamps();
         });
     }
