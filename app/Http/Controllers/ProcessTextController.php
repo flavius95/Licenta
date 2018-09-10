@@ -22,7 +22,7 @@ class ProcessTextController extends Controller
        return view('urls.index', compact('urls'));
    }
 
- /**
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -58,15 +58,12 @@ class ProcessTextController extends Controller
             }
           }
 
-
-
           $text_processed = $helper->getPageTf($url);
           $topicsData = TopicModel::all()->toArray();
           if (!empty($text_processed['error']) && !empty($text_processed['errorMsg'])) {
               exit;
           }
           $subpages = $helper->getLinks($url);
-          // dd(count($subpages));
           $subpages_tf_words = $helper->getPagesTfs($subpages);
 
           $collection = array_keys($text_processed);
@@ -88,7 +85,6 @@ class ProcessTextController extends Controller
           }
 
           $idf_words = $helper->calculateIdf(count($subpages), $words_appearance);
-          $topicsData = TopicModel::all()->toArray();
           $topics_grouped = TopicModel::arrangeTopics($topicsData);
           $website_words  = array_keys($idf_words);
           $results = [];
@@ -96,11 +92,12 @@ class ProcessTextController extends Controller
             $common_words = array_intersect($website_words, $words);
             $results[$topic] = $common_words;
           }
-          $selected_topics = $details = "";
+          $details = "Cuvintele procesate: " . implode(", ", $website_words) . "<br>";
+          $selected_topics = "";
           if (count($results)) {
             foreach ($results as $topic => $words) {
               $selected_topics .= count($words) ? $topic . ', ' : '';
-              $details .= count($words) ? 'Topic ' . $topic . ' has words: ' . implode(', ', $words) : '';
+              $details .= count($words) ? 'Topic ' . $topic . ' has words: ' . implode(', ', $words) . '<br>' : '';
             }
           }
           $url_model = new UrlModel([

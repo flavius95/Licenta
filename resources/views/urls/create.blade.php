@@ -12,7 +12,7 @@
     </div>
     <div class="form-group row">
       <div class="col-md-10">
-          <input type="submit" class="btn btn-primary float-right">
+          <input type="submit" class="btn btn-primary float-right" value="Submit">
       </div>
     </div>
   </form>
@@ -34,7 +34,6 @@
               type: 'post',
               data: parameters,
               success: function( response ){
-                  console.log(response);
                   $('#response').html(response.details);
               }
           });

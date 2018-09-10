@@ -5,14 +5,7 @@ namespace App\Http\Helpers;
 use Symfony\Component\DomCrawler\Crawler;
 use App\Stopwords;
 use Skyeng\Lemmatizer;
-use Skyeng\Lemma;
 use \GuzzleHttp\Client;
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  * Description of TextProcessorHelper
@@ -20,7 +13,12 @@ use \GuzzleHttp\Client;
  * @author Flavius Ilina
  */
 class TextProcessorHelper {
-
+    
+    /**
+     * 
+     * @param type $html
+     * @return type
+     */
     public function generateTf($html)
     {
         $crawler = new Crawler($html);
@@ -39,7 +37,6 @@ class TextProcessorHelper {
         //transform text to lowercase
         $words_map = array_map('strtolower', $nodeValues);
         $content_separated = implode(" ", $words_map);
-        //aici pun metoda de sanitizare
 
 
         $split_text_words = array_count_values(str_word_count($content_separated, 1));
@@ -50,7 +47,6 @@ class TextProcessorHelper {
         $differences = array_diff($text_words, $stopwords);
 
         $lm_words = $this->lemmatize($differences);
-        // dd($lm_words);
         $totalWords = count($lm_words);
         $tfData= array();
 
@@ -62,7 +58,11 @@ class TextProcessorHelper {
         return $tfData;
     }
 
-
+    /**
+     * 
+     * @param type $url
+     * @return string
+     */
     public function getLinks($url)
     {
          $client = new Client();
@@ -95,6 +95,12 @@ class TextProcessorHelper {
 
     }
 
+    /**
+     * 
+     * @param type $url
+     * @return type
+     * @throws Exception
+     */
     public function getPageTf($url)
     {
         try{
@@ -113,7 +119,12 @@ class TextProcessorHelper {
             return ['error' => true, 'errorMesg' => $ex->getMessage()];
         }
     }
-
+    
+    /**
+     * 
+     * @param type $pages
+     * @return type
+     */
     public function getPagesTfs($pages) {
         $tfs = [];
 
@@ -128,7 +139,12 @@ class TextProcessorHelper {
         }
         return $tfs;
     }
-
+    
+    /**
+     * 
+     * @param type $words
+     * @return type
+     */
     public function lemmatize($words) {
         $lm = [];
         if(count($words)) {
@@ -144,13 +160,18 @@ class TextProcessorHelper {
         return $lm;
     }
 
-
+    /**
+     * 
+     * @param type $subpages_nr
+     * @param type $words
+     * @return type
+     */
     public function calculateIdf($subpages_nr, $words) {
         $result = [];
 
         if (count($words)) {
             foreach($words as $word => $frequency) {
-                $word_weight = $subpages_nr ? log(($subpages_nr/$frequency)) : 0;
+                $word_weight = $subpages_nr && $frequency ? log(($subpages_nr/$frequency)) : 0;
                 if ($word_weight >= 0.5) {
                     $result[$word] = $subpages_nr ? log(($subpages_nr/$frequency)) : 0;
                 }
