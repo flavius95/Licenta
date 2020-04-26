@@ -12,7 +12,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
       $this->call([
-        TopicsTableSeeder::class
+        TopicsTableSeeder::class,
+        StopWordsTableSeeder::class
       ]);
 
       $this->command->info('Tables seeded!');
