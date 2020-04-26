@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Topic extends Model
 {
     protected $fillable = ['topic', 'word'];
+    public $timestamps = false;
 
     public static function arrangeTopics(array $data) : array
     {
