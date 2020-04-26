@@ -9,10 +9,8 @@
       <div class="col-sm-7">
         <input type="text" class="form-control form-control-lg" id="lgFormGroupInput" placeholder="url" name="page_url">
       </div>
-    </div>
-    <div class="form-group row">
-      <div class="col-md-10">
-          <input type="submit" class="btn btn-primary float-right" value="Submit">
+      <div class="col-md-2">
+        <input type="submit" class="btn btn-primary" value="Submit">
       </div>
     </div>
   </form>
