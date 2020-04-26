@@ -12,7 +12,7 @@ class TopicsTableSeeder extends Seeder
      */
     public function run()
     {
-
+      DB::table('topics')->delete();
       Topic::insert(
         [
           [  'topic' => 'clothes', 'word' => 'apparel'],

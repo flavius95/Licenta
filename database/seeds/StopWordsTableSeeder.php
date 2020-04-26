@@ -11,6 +11,7 @@ class StopWordsTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('stopwords')->delete();
         DB::unprepared(file_get_contents(__DIR__ . '\stop_words.sql'));
     }
 }
