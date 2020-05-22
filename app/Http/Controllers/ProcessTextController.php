@@ -89,7 +89,7 @@ class ProcessTextController extends Controller
           $website_words  = array_keys($idf_words);
           $results = [];
           foreach ($topics_grouped as $topic => $words) {
-            $common_words = array_intersect($website_words, $words);
+            $common_words = $this->checkExists($website_words, $words);
             $results[$topic] = $common_words;
           }
           $details = "Cuvintele procesate: " . implode(", ", $website_words) . "<br>";
@@ -111,5 +111,20 @@ class ProcessTextController extends Controller
           return response()->json($front_response);
 
 
+    }
+
+    private function checkExists($website_words, $topic_words) {
+      $commonWords = array_intersect($website_words, $topic_words);
+        if(!count($commonWords)) {
+          $commonWords = [];
+          foreach($topic_words as $word) {
+            foreach($website_words as $w_piece)
+            if (strpos($w_piece, $word) !== FALSE) {
+              $commonWords[] = $w_piece;
+            }
+          }
+        }
+
+      return $commonWords;
     }
 }
