@@ -13,9 +13,9 @@ use \GuzzleHttp\Client;
  * @author Flavius Ilina
  */
 class TextProcessorHelper {
-    
+
     /**
-     * 
+     *
      * @param type $html
      * @return type
      */
@@ -30,8 +30,9 @@ class TextProcessorHelper {
         foreach($stopwords_array as $sword) {
             $stopwords[] = $sword['words'];
         }
+
         $nodeValues = $crawler->filter('p')->each(function (Crawler $node, $i) {
-            return $node->text();
+            return preg_replace("/[^A-Za-z ]/", '', $node->text());
         });
 
         //transform text to lowercase
@@ -45,8 +46,13 @@ class TextProcessorHelper {
         //eliminate all found stopwords
 
         $differences = array_diff($text_words, $stopwords);
-
-        $lm_words = $this->lemmatize($differences);
+        $diff = [];
+        foreach($differences as $key => $word) {
+          if (strlen($word) < 200) {
+            $diff[$key] = $word;
+          }
+        }
+        $lm_words = $this->lemmatize($diff);
         $totalWords = count($lm_words);
         $tfData= array();
 
@@ -59,7 +65,7 @@ class TextProcessorHelper {
     }
 
     /**
-     * 
+     *
      * @param type $url
      * @return string
      */
@@ -96,7 +102,7 @@ class TextProcessorHelper {
     }
 
     /**
-     * 
+     *
      * @param type $url
      * @return type
      * @throws Exception
@@ -119,9 +125,9 @@ class TextProcessorHelper {
             return ['error' => true, 'errorMesg' => $ex->getMessage()];
         }
     }
-    
+
     /**
-     * 
+     *
      * @param type $pages
      * @return type
      */
@@ -139,9 +145,9 @@ class TextProcessorHelper {
         }
         return $tfs;
     }
-    
+
     /**
-     * 
+     *
      * @param type $words
      * @return type
      */
@@ -161,7 +167,7 @@ class TextProcessorHelper {
     }
 
     /**
-     * 
+     *
      * @param type $subpages_nr
      * @param type $words
      * @return type
