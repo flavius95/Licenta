@@ -97,7 +97,7 @@ class ProcessTextController extends Controller
           if (count($results)) {
             foreach ($results as $topic => $words) {
               $selected_topics .= count($words) ? $topic . ', ' : '';
-              $details .= count($words) ? 'Topic ' . $topic . ' has words: ' . implode(', ', $words) . '<br>' : '';
+              $details .= count($words) ? 'Topicul ' . $topic . ' este reprezentat de cuvintele: ' . implode(', ', $words) . '<br>' : '';
             }
           }
           $url_model = new UrlModel([

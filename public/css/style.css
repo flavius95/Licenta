@@ -11,3 +11,40 @@ header {
 section {
   padding: 150px 0;
 }
+
+.hidden {
+    display: none;
+}
+
+.message {
+  font-size: 16px;
+}
+/* loading dots */
+
+.loading:after {
+    content: ' .';
+    animation: dots 5s steps(1, end) infinite;
+}
+@keyframes dots {
+    0%, 12.5% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 1;
+    }
+    37.5% {
+        text-shadow: .5em 0;
+    }
+    50% {
+        text-shadow: .5em 0, 1em 0;
+    }
+    62.5% {
+        text-shadow: .5em 0, 1em 0, 1.5em 0;
+    }
+    75% {
+        text-shadow: .5em 0, 1em 0, 1.5em 0, 2em 0;
+    }
+    87.5%, 100%{
+        text-shadow: .5em 0, 1em 0, 1.5em 0, 2em 0, 2.5em;
+    }
+}
